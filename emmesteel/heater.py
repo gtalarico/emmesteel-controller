@@ -1,4 +1,4 @@
-# WIP
+""" Emmesteel API Controller"""
 
 import asyncio
 import websockets
