@@ -3,20 +3,28 @@
 Library for connecting to Emmesteel Digital Heat Controller.
 This is the Digital Controller used in the italian-made towel warmers sold by [Amba](https://ambaproducts.com/) like the modello i, etc
 
-## Background
+## Motivation
 
-### No Wifi Config Possible
-The uses a dedicated Wifi AP for user-device control but it does not allow you to provide a wifi setting for the device to use.
-To make any changes to the device settings or remotely control it, you must always temporarily connec to the device AP.
+They make nice towel warmers for sure, but for a $300 controller the "smart" side of this controller failed to deliver.
 
-### No Scheduling
-Furthermore, the software does not allowing scheduling start/end, only a shut-off timer.
+#### No Home Network
+The device spins up its own Wifi AP and once connected, it launched a UI to control it using a captive portal.
+It does not allow you to provide a wifi settings. To make any changes to the device settings or remotely control it,
+you must always temporarily connec to the device AP.
 
-### Solution
-To get around these limitation, I developed a library that can communicate and control the device and a Home Assistant Integration to manage it.
-For the Wifi AP problem, I decided to use a RaspberryPi as a proxy. The Pi connects to both wifi networks simutaneously, and then proxies home network requests to the device via the device's custome wifi network.
+#### No Scheduling
+They only controls offered are on/off, temperature and a count down shut-off timer.
+ It does not allow scheduling start/end times so you can, for example, turn it own in the morning, and off in the evening.
 
+## Solution
+This library can communicate and control the device via a short-lived websocket connection.
+For the Wifi AP problem, it documents how to use RaspberryPi (Pi) as a proxy.
+The Pi connects to both networks simutaneously, and then proxies home network requests to the device's own dedicated wifi.
 The Pi proxy also helps solve a very low wifi signal that is caused by the controller being inside a metal junction box.
+
+Finally, a minimal Home Assistant Integration allows to easily remotely control the device, see history and include in any desired home automation.
+
+------
 
 ## Network Setup - Summary
 1. Setup a RaspberryPi with default OS and connect it to your home wifi
