@@ -1,0 +1,9 @@
+{
+    "domain": "emmesteel",
+    "name": "Emmesteel Towel Warmer",
+    "version": "0.1.0",
+    "documentation": "https://www.example.com",
+    "requirements": ["websockets==13.1, emmesteel==0.0.3"],
+    "dependencies": [],
+    "codeowners": ["@your_github_username"]
+  }
