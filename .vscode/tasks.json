@@ -6,7 +6,7 @@
         {
             "label": "sync homeassistant component",
             "type": "shell",
-            "command": "rsync -avz --rsync-path=\"sudo rsync\"  ./home-assistant homeassistant.local:/config/custom_components/emmesteel"
+            "command": "rsync -avz --rsync-path=\"sudo rsync\"  ./home-assistant/* homeassistant.local:/config/custom_components/emmesteel"
         }
     ]
 }

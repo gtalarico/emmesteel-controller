@@ -31,6 +31,7 @@ class EmmesteelPower(NumberEntity):
         self._proxy = entry.data[CONF_PROXY]
 
         self._name = "Emmesteel Towel Warmer Power Level"
+        self._attr_mode = "box" 
         self._attr_unique_id = f"emmesteel-power-proxy-{self._proxy}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._proxy)},
@@ -39,10 +40,10 @@ class EmmesteelPower(NumberEntity):
         )
 
         # Levels
-        self._native_value = 0  # initial power level
-        self._native_min_value = 0
-        self._native_max_value = 5
+        self._native_value = 5  # initial power level
         self._native_step = 1
+        self._native_min_value = 1
+        self._native_max_value = 5
 
     @property
     def name(self):
