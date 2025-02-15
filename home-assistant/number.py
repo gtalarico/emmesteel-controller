@@ -1,15 +1,11 @@
-"""EmmesteelPower.
+"""Emmesteel Power Level Entity."""
 
-Represents the power level setting
-"""
+import logging
 
 from homeassistant.components.number import NumberEntity
-import logging
-from pyemmesteel import EmmesteelApi
+from homeassistant.helpers.device_registry import DeviceInfo
 
-
-from .const import DOMAIN, CONF_PROXY, CMD_POWER_UP, CMD_POWER_DN
-
+from .const import CMD_POWER_DN, CMD_POWER_UP, CONF_PROXY, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,6 +32,11 @@ class EmmesteelPower(NumberEntity):
 
         self._name = "Emmesteel Towel Warmer Power Level"
         self._attr_unique_id = f"emmesteel-power-proxy-{self._proxy}"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._proxy)},
+            name=self._name,
+            manufacturer="Emmesteel",
+        )
 
         # Levels
         self._native_value = 0  # initial power level
@@ -62,6 +63,11 @@ class EmmesteelPower(NumberEntity):
     def native_max_value(self):
         """Return the maximum power level."""
         return self._native_max_value
+
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes of the device."""
+        return {"proxy": self._proxy}
 
     @property
     def native_step(self):

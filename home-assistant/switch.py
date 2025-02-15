@@ -1,12 +1,11 @@
+"""Emmesteel Switch Entity."""
+
 import logging
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.helpers.device_registry import DeviceInfo
 
-
-from pyemmesteel import EmmesteelApi
-from .const import DOMAIN, CONF_PROXY
-from .const import CMD_ON_OFF, CMD_POWER_UP, CMD_POWER_DN
+from .const import CMD_ON_OFF, CMD_POWER_DN, CMD_POWER_UP, CONF_PROXY, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +34,7 @@ class EmmesteelSwitch(SwitchEntity):
         self._name = "Emmesteel Towel Warmer Switch"
         self._attr_unique_id = f"emmesteel-switch-proxy-{self._proxy}"
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, self._attr_unique_id)},
+            identifiers={(DOMAIN, self._proxy)},
             name=self._name,
             manufacturer="Emmesteel",
         )

@@ -33,16 +33,10 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     api = EmmesteelApi(proxy)
     try:
         state = await api.get_state()
-        _LOGGER.debug(f"auth result: {state}")
+        _LOGGER.debug("auth result: %s", state)
     except Exception as err:
-        _LOGGER.warning(f"authentication failed: {err}")
+        _LOGGER.warning("cannot connect to proxy: %s", err)
         raise CannotConnect
-
-    # TODO
-    # If you cannot connect:
-    # throw CannotConnect
-    # If the authentication is wrong:
-    # InvalidAuth
 
     # Return info that you want to store in the config entry.
     return {"title": "Emmesteel Towel Warmer", "proxy": proxy}
