@@ -29,15 +29,13 @@ class State:
     _state: Optional[Dict] = None
 
     def __init__(self, raw_state:str=''):
+        self._raw = raw_state
+        self._state = {}
         if raw_state:
-            self._raw = raw_state
-            state_dict = self._state = state_dict = self.parse_response(raw_state)
+            self._state = state_dict = self.parse_response(raw_state)
             self.is_on = bool(int(state_dict[STATE_ON_OFF]))
             self.level = int(state_dict[STATE_LEVEL])
-        else:
-            self._raw = ""
-            self._state = {}
-        
+            
 
     @staticmethod
     def parse_response(raw_state: str) -> "dict[str, str]":
@@ -51,6 +49,9 @@ class State:
             values[readable_key] = value
         # e.g. {"ON_OFF": "1"}
         return values
+    
+    def is_empty(self):
+        return self._raw == ""
         
 class EmmesteelApi:
     """ Emmesteel Api"""
@@ -58,7 +59,7 @@ class EmmesteelApi:
         self.host = host
         self.ui = f"http://{host}"
         self._websocket_addr = f"ws://{host}/ws"
-
+    
     async def get_state(self) -> 'State':
         return await self.send_cmd(CMD_EMPTY)
 

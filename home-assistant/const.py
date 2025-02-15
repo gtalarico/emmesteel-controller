@@ -1,5 +1,7 @@
 DOMAIN = "emmesteel"
 
+CONF_PROXY = "proxy"
+
 CMD_EMPTY = ""
 CMD_ON_OFF = "on-off"
 CMD_POWER_UP = "power-up"

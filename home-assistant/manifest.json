@@ -3,7 +3,11 @@
     "name": "Emmesteel",
     "version": "0.1.0",
     "documentation": "https://github.com/gtalarico/pyemmesteel",
-    "requirements": ["websockets==13.1, emmesteel==0.0.1"],
+    "requirements": ["websockets==13.1", "pyemmesteel==0.0.1"],
     "dependencies": [],
-    "codeowners": ["@gtalarico"]
+    "codeowners": ["@gtalarico"],
+    "config_flow": true,
+    "homekit": {},
+    "ssdp": [],
+    "zeroconf": []
   }

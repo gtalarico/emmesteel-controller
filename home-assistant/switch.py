@@ -1,42 +1,46 @@
 import logging
 
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.components.number import NumberEntity
+from homeassistant.helpers.device_registry import DeviceInfo
 
 
-from emmesteel import EmmesteelApi
+from pyemmesteel import EmmesteelApi
+from .const import DOMAIN, CONF_PROXY
 from .const import CMD_ON_OFF, CMD_POWER_UP, CMD_POWER_DN
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO Future - Get From Config
-DEFAULT_PI_PROXY = "192.168.50.100"
+
+async def async_setup_entry(hass, entry, async_add_entities):
+    """Set up the Emmesteel switch."""
+    async_add_entities([EmmesteelSwitch(hass, entry)], True)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Set up the Emmesteel switch platform."""
-    proxy = config.get("proxy") or DEFAULT_PI_PROXY
-    _LOGGER.debug("Setting up switch with proxy: %s", proxy)
-    async_add_entities([EmmesteelSwitch(hass, proxy)])
-
-
-class EmmesteelSwitch(SwitchEntity, NumberEntity):
+class EmmesteelSwitch(SwitchEntity):
     """Representation of an Emmesteel towel warmer switch."""
 
-    def __init__(self, hass, proxy):
-        """Initialize the switch."""
+    _attr_icon = "mdi:radiator-disabled"
+    _attr_should_poll = True
+    _attr_supported_features = None
+    _attr_preset_modes = []
+
+    def __init__(self, hass, entry) -> None:
+        """Initialize the power level."""
+
         self.hass = hass
-        self._api = EmmesteelApi(proxy)
-        self._name = "Emmesteel Towel Warmer"
-        self._attr_unique_id = f"proxy-{proxy}"
-        self._proxy = proxy
+
+        self._api = hass.data[DOMAIN][entry.entry_id]
+        self._proxy = entry.data[CONF_PROXY]
+
+        self._name = "Emmesteel Towel Warmer Switch"
+        self._attr_unique_id = f"emmesteel-switch-proxy-{self._proxy}"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._attr_unique_id)},
+            name=self._name,
+            manufacturer="Emmesteel",
+        )
 
         self._is_on = False
-        # Levels
-        self._native_value = 0  # initial power level
-        self._native_min_value = 0
-        self._native_max_value = 5
-        self._native_step = 1
 
     @property
     def name(self):
@@ -47,26 +51,6 @@ class EmmesteelSwitch(SwitchEntity, NumberEntity):
     def is_on(self):
         """Return true if the switch is on."""
         return self._is_on
-
-    @property
-    def native_value(self):
-        """Return the current power level."""
-        return self._native_value
-
-    @property
-    def native_min_value(self):
-        """Return the minimum power level."""
-        return self._native_min_value
-
-    @property
-    def native_max_value(self):
-        """Return the maximum power level."""
-        return self._native_max_value
-
-    @property
-    def native_step(self):
-        """Return the incremental step size."""
-        return self._native_step
 
     @property
     def extra_state_attributes(self):
@@ -151,3 +135,9 @@ class EmmesteelSwitch(SwitchEntity, NumberEntity):
             await self.async_toggle(**kwargs)
         else:
             _LOGGER.debug("Requested turn off but device is already off.")
+
+    async def async_update(self):
+        """Fetch new state data for the switch."""
+        state = await self._api.get_state()
+        self._is_on = state.is_on or False
+        _LOGGER.debug("Emmesteel towel warmer state updated: %s", state)
